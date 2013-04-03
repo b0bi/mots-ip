@@ -1,4 +1,7 @@
 import filedict
+import config
+
+filedictdb = None
 
 class UserInformation(object):
     username = None
@@ -9,15 +12,31 @@ class UserInformation(object):
     failed_attempts = None
     enabled = True
 
-def load_db():
-    return filedict.FileDict(filename="passwd.db")
+class PasswdDB(object):
+    db = None
+    dbfilename = "/etc/%s/passwd.db"%(config.PROJECT_NAME)
+    def __init__(self):
 
-def load_user_info(username):
-    db = load_db()
-    key = username+"_info"
-    return db[key]
+        self.db= filedict.FileDict(filename=dbfilename)
 
-def save_user_info(info):
-    db = load_db()
-    username = info.username
-    key = username+"_info"
+    def load_user_info(self, username):
+        db = load_db()
+        key = username+"_info"
+        return db[key]
+
+    def save_user_info(self, info):
+        username = info.username
+        key = username+"_info"
+        self.db[key] = info
+
+    def store_public_key(self, key):
+        self.db["local_public_key"] = key
+
+    def load_public_key(self, key):
+        return self.db["local_public_key"]
+
+    def store_private_key(self, key):
+        self.db["local_private_key"] = key
+
+    def load_private_key(self, key):
+        return self.db["local_private_key"]

@@ -23,7 +23,7 @@ def encrypt_aes(payload,key):
 
 
 if __name__ == "__main__":
-    payload = "the eagles land in dawn"
+    payload = "the eagles land at dawn"
     key ="mykey123"
     msg = encrypt_aes(payload,key)
     print [hex(ord(c)) for c in msg]
