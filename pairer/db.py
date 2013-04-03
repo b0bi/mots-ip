@@ -28,15 +28,3 @@ class PasswdDB(object):
         username = info.username
         key = username+"_info"
         self.db[key] = info
-
-    def store_public_key(self, key):
-        self.db["local_public_key"] = key
-
-    def load_public_key(self, key):
-        return self.db["local_public_key"]
-
-    def store_private_key(self, key):
-        self.db["local_private_key"] = key
-
-    def load_private_key(self, key):
-        return self.db["local_private_key"]
