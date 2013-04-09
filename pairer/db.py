@@ -22,14 +22,12 @@ class PasswdDB(object):
     db = None
     dbfilename = "/etc/%s/passwd.db"%(config.PROJECT_NAME)
     def __init__(self):
-
-        self.db= filedict.FileDict(filename=dbfilename)
+        self.db= filedict.FileDict(filename=self.dbfilename)
 
     def load_user_info(self, username):
-        db = load_db()
         key = username+"_info"
-        if db.has_key(key):
-            return db[key]
+        if self.db.has_key(key):
+            return self.db[key]
         else:
             new_record = UserInformation()
             new_record.username = username

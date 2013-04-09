@@ -4,8 +4,8 @@ import base64
 import random, string
 
 def generate_aes_key(length):
-    alphanum = string.ascii_letters+string.digits
-    return [random.choice(alphanum) for i in range(length)].join("")
+    alphanum = string.ascii_letters+string.digits.replace("0","").replace("o","").replace("O","")
+    return "".join([random.choice(alphanum) for i in range(length)])
 
 
 def pad_key(key):
