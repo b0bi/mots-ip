@@ -1,6 +1,11 @@
 from Crypto.Cipher import AES
 from Crypto import Random
 import base64
+import random, string
+
+def generate_aes_key(length):
+    alphanum = string.ascii_letters+string.digits
+    return [random.choice(alphanum) for i in range(length)].join("")
 
 
 def pad_key(key):

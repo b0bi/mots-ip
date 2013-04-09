@@ -14,7 +14,7 @@ class UserInformation(object):
     last_login = None
     failed_attempts = None
     enabled = True
-    guid = None
+    smartphone_guid = None
     mobile_factor = True
     password_factor = False
 
@@ -28,7 +28,12 @@ class PasswdDB(object):
     def load_user_info(self, username):
         db = load_db()
         key = username+"_info"
-        return db[key]
+        if db.has_key(key):
+            return db[key]
+        else:
+            new_record = UserInformation()
+            new_record.username = username
+            return new_record
 
     def save_user_info(self, info):
         username = info.username
