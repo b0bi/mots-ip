@@ -15,15 +15,6 @@ import config
 import threading
 import network
 
-class stage2_fetcher(threading.Thread):
-    def __init__(self, shared_dict):
-        self.shared_dict = shared_dict
-        threading.Thread.__init__(self)
-    def run(self):
-        response = network.recv_bcast(config.UDP_PAIRING_PORT)
-        #CONTINUE HERE
-        self.shared_dict["done"
-
 
 class Pairer(object):
     def __init__(self, username):
@@ -36,6 +27,11 @@ class Pairer(object):
         print "Pairing key for smartphone with %s: %s"%(self.user_info.username,self.user_info.aes_key)
 
     def stage2(self):
+        s2_success = False
+        while not s2_success:
+            s2_buffer = network.recv_bcast(config.UDP_PAIRING_PORT)
+            #decode and see if it matches
+
 
 
 if __name__=="__main__":
