@@ -2,7 +2,7 @@ from Crypto.Cipher import AES
 from Crypto import Random
 import base64
 import random, string
-
+import config
 def generate_aes_key(length):
     alphanum = string.ascii_letters.replace("o","").replace("O","")+string.digits.replace("0","")
     return "".join([random.choice(alphanum) for i in range(length)])
@@ -13,15 +13,19 @@ def pad_key(key):
 
 
 def decrypt_aes(payload,key):
-    key = pad_key(key)
+    if config.DISABLE_ENCRYPTION:
+        return payload
+    padded_key = pad_key(key)
     iv = payload[:AES.block_size]
     payload= payload[AES.block_size:]
-    cipher = AES.new(key, AES.MODE_CFB, iv)
+    cipher = AES.new(padded_key, AES.MODE_CFB, iv)
     msg = cipher.decrypt(payload)
     return msg
 
 
 def encrypt_aes(payload,key):
+    if config.DISABLE_ENCRYPTION:
+        return payload
     key = pad_key(key)
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(key, AES.MODE_CFB, iv)
