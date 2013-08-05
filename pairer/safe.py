@@ -4,12 +4,12 @@ import base64
 import random, string
 
 def generate_aes_key(length):
-    alphanum = string.ascii_letters+string.digits.replace("0","").replace("o","").replace("O","")
+    alphanum = string.ascii_letters.replace("o","").replace("O","")+string.digits.replace("0","")
     return "".join([random.choice(alphanum) for i in range(length)])
 
 
 def pad_key(key):
-    return key[:32].ljust(32)
+    return key[:16].ljust(16)
 
 
 def decrypt_aes(payload,key):
