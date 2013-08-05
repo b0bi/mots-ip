@@ -59,12 +59,26 @@ class Pairer(object):
                 print "Invalid buffer format received."
 
     def stage3(self):
-        server_guid = db.PasswdDB.get_server_guid()
-        encrypted_server_guid = safe.encrypt_aes(server_guid,self.user_info.aes_key)
+        server_guid = self.passwddb.get_server_guid()
+        msg = server_guid+"$"+self.user_info.username
+        encrypted_server_guid = safe.encrypt_aes(msg,self.user_info.aes_key)
         network.send_bcast(config.UDP_PAIRING_PORT, server_guid+"$"+encrypted_server_guid)
 
     def stage4(self):
-
+        s4_success = False
+        while not s4_success:
+            s4_buffer = network.recv_bcast(config.UDP_PAIRING_PORT)[0]
+            try:
+                target_server_guid = s4_buffer.split("$")[0]
+                if target_server_guid == self.passwddb.get_server_guid():
+                    decrypted_payload = safe.decrypt_aes(s4_buffer.split("$")[1], self.user_info.aes_key)
+                    if decrypted_payload == "OK":
+                        msg = self.candidate_smartphone_guid+"$"+safe.encrypt_aes("OK",self.user_info.aes_key)
+                        network.send_bcast(config.UDP_PAIRING_PORT, msg)
+                        self.user_info.smartphone_guid = self.candidate_smartphone_guid
+                        self.passwddb.save_user_info(self.user_info)
+            except IndexError:
+                print "Received message in unknown format"
 
 
 
@@ -80,6 +94,9 @@ if __name__=="__main__":
         print "Waiting for the smartphone..."
         pairer.stage2()
         pairer.stage3()
+        print "Confirming..."
+        pairer.stage4()
+        print "Pairing completed"
 
     except KeyboardInterrupt:
-        print "User aborted the process"
+        print "User aborted the pairing process"
